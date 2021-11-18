@@ -1,0 +1,21 @@
+name = "OrderedBinning"
+uuid = "7ddfbc40-471f-4c10-8de2-c2a38c92fc06"
+authors = ["Tamás K. Papp <tkpapp@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+ArgCheck = "dce04be8-c92d-5529-be00-80e4d2c0e197"
+DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
+UnPack = "3a884ed6-31ef-47d7-9d2a-63182c4928ed"
+
+[compat]
+julia = "1"
+ArgCheck = "1, 2"
+DocStringExtensins = "0.8"
+UnPack = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

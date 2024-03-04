@@ -6,7 +6,6 @@ module OrderedBinning
 export ordered_bins
 
 using ArgCheck: @argcheck
-using UnPack: @unpack
 using DocStringExtensions: SIGNATURES
 
 struct OrderedBins{V<:AbstractVector,T}
@@ -59,7 +58,7 @@ function ordered_bins(boundaries; strict::Bool = true, tolerance = 0)
 end
 
 function (ob::OrderedBins)(x)
-    @unpack boundaries, strict, tolerance = ob
+    (; boundaries, strict, tolerance) = ob
     lo, hi = firstindex(boundaries), lastindex(boundaries)
     mi, ma = first(boundaries), last(boundaries)
     if x < mi

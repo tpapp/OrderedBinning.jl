@@ -37,3 +37,15 @@ end
         end
     end
 end
+
+using JET
+@testset "static analysis with JET.jl" begin
+    @test isempty(JET.get_reports(report_package(OrderedBinning, target_modules=(OrderedBinning,))))
+end
+
+@testset "QA with Aqua" begin
+    import Aqua
+    Aqua.test_all(OrderedBinning; ambiguities = false)
+    # testing separately, cf https://github.com/JuliaTesting/Aqua.jl/issues/77
+    Aqua.test_ambiguities(OrderedBinning)
+end

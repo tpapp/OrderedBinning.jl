@@ -11,7 +11,7 @@ Flexible binning of univariate arguments based on a sorted vector.
 
 - customizable “halo” around the range or boundaries, for handling numerical error
 - customizable handling of values that coincide with bin boundaries
-- outside values can error or return a custom value on either side
+- outside values can error or on either side
 
 # Why is this in a package?
 

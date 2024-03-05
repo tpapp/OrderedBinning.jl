@@ -1,4 +1,4 @@
-using OrderedBinning: ordered_bins
+using OrderedBinning: ordered_bins, OrderedBinning
 using Test
 
 @testset "error, zero halo" begin

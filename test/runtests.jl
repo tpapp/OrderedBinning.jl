@@ -1,14 +1,17 @@
-using OrderedBinning
+using OrderedBinning: ordered_bins, OrderedBinning
 using Test
 
-@testset "non-strinct, zero tolerance" begin
+@testset "error, zero halo" begin
     boundaries = 0:3
-    ob = ordered_bins(boundaries; strict = false)
-    @test ob(-1) == 0
-    @test ob(0) == 1
+    ob = ordered_bins(boundaries)
+    @test_throws DomainError ob(-1) == 0
+    @test @inferred ob(0) == 1
     @test ob(0.5) == 1
+    @test ob(1) == 2
+    @test ob(2) == 3
+    @test ob(2.1) == 3
     @test ob(3) == 3
-    @test ob(4) == 4
+    @test_throws DomainError ob(4)
     for _ in 1:100
         x = rand(Bool) ? rand(0:3) : rand() * 3.0
         i = ob(x)
@@ -19,21 +22,24 @@ using Test
     end
 end
 
-@testset "strint, 0.5 tolerance" begin
+@testset "don't error, asymmetric tolerance, break to left" begin
     boundaries = 0:3
-    ob = ordered_bins(boundaries; strict = true, tolerance = 0.5)
-    @test_throws DomainError ob(-1)
+    ob = ordered_bins(boundaries, :left;
+                      halo_below = 0.5, error_below = false,
+                      halo_above = 2, error_above = false)
+    @test ob(-1) == 0
+    @test ob(-0.5) == 1
     @test ob(0) == 1
     @test ob(0.5) == 1
-    @test ob(3) == 3
+    @test ob(2) == 2
     @test ob(3.5) == 3
-    @test_throws DomainError ob(4)
+    @test ob(6) == 4
     for _ in 1:100
         x = rand(Bool) ? rand(0:3) : rand() * 3.0
         i = ob(x)
         @test boundaries[i] ≤ x ≤ boundaries[i + 1]
-        if x < 3
-            @test x < boundaries[i + 1]
+        if x > 0
+            @test x > boundaries[i]
         end
     end
 end

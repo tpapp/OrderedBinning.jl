@@ -1,7 +1,7 @@
 name = "OrderedBinning"
 uuid = "7ddfbc40-471f-4c10-8de2-c2a38c92fc06"
 authors = ["Tamás K. Papp <tkpapp@gmail.com>"]
-version = "0.1.1"
+version = "0.2.0"
 
 [deps]
 ArgCheck = "dce04be8-c92d-5529-be00-80e4d2c0e197"

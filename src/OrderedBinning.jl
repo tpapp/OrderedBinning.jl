@@ -1,7 +1,13 @@
 """
 Flexible and robust binning of real numbers.
 
-Public API is `ordered_bins` and `default_halo`, neither are exported.
+Public API is
+
+1. [`ordered_bins`](@ref)
+2. [`default_halo`](@ref)
+3. [`bin_range`](@ref)
+
+Neither are exported.
 """
 module OrderedBinning
 
@@ -149,6 +155,23 @@ function (ob::OrderedBins{E})(x) where E
     else
         _inner_bin_index(Val(E), boundaries, x)
     end
+end
+
+"""
+$(SIGNATURES)
+
+The possible range of bin indices.
+"""
+function bin_range(ob::OrderedBins)
+    (; boundaries, error_below, error_above) = ob
+    b, a = bins_below_above(boundaries)
+    if error_below
+        b += 1
+    end
+    if error_above
+        a -= 1
+    end
+    b:a
 end
 
 end # module

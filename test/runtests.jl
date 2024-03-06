@@ -1,9 +1,10 @@
-using OrderedBinning: ordered_bins, OrderedBinning
+using OrderedBinning: ordered_bins, OrderedBinning, bin_range
 using Test
 
 @testset "error, zero halo" begin
     boundaries = 0:3
     ob = ordered_bins(boundaries)
+    @test @inferred bin_range(ob) == 1:3
     @test_throws DomainError ob(-1) == 0
     @test @inferred ob(0) == 1
     @test ob(0.5) == 1
@@ -27,6 +28,7 @@ end
     ob = ordered_bins(boundaries, :left;
                       halo_below = 0.5, error_below = false,
                       halo_above = 2, error_above = false)
+    @test @inferred bin_range(ob) == 0:4
     @test ob(-1) == 0
     @test ob(-0.5) == 1
     @test ob(0) == 1

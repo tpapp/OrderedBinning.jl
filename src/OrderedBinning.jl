@@ -6,8 +6,9 @@ Public API is
 1. [`ordered_bins`](@ref)
 2. [`default_halo`](@ref)
 3. [`bin_range`](@ref)
+4. [`make_increasing`](@ref)
 
-Neither are exported.
+None of them are exported.
 """
 module OrderedBinning
 
@@ -48,7 +49,7 @@ struct OrderedBins{E,V<:AbstractVector,T}
         @argcheck halo_above ≥ 0
         for i in firstindex(boundaries):(lastindex(boundaries)-1)
             @argcheck(boundaries[i] < boundaries[i + 1],
-                      "Boundaries need to be strictly increasing.")
+                      "Boundaries need to be strictly increasing (cf OrderedBinning.make_increasing).")
         end
         new{E,V,T}(boundaries, halo_below, halo_above, error_below, error_above)
     end
@@ -77,7 +78,7 @@ default_halo(span::Real) = 0
 $(SIGNATURES)
 
 Return a callable that places its argument in to bins according to `boundaries`, which
-should be sorted (strictly increasing).
+should be sorted (strictly increasing, cf [`make_increasing`](@ref)).
 
 Specifically, let
 
@@ -172,6 +173,30 @@ function bin_range(ob::OrderedBins)
         a -= 1
     end
     b:a
+end
+
+"""
+$(SIGNATURES)
+
+Keep elements from the argument so that the result is (strictly) increasing. Always
+return a new vector.
+
+```jldoctest
+julia> make_increasing([1, -1, 2, 2, 3])
+3-element Vector{Int64}:
+ 1
+ 2
+ 3
+```
+"""
+function make_increasing(v::AbstractVector{T}) where T
+    increasing_v = T[]
+    for x in v
+        if isempty(increasing_v) || increasing_v[end] < x
+            push!(increasing_v, x)
+        end
+    end
+    increasing_v
 end
 
 end # module

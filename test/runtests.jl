@@ -1,4 +1,4 @@
-using OrderedBinning: ordered_bins, OrderedBinning, bin_range
+using OrderedBinning: ordered_bins, OrderedBinning, bin_range, make_increasing
 using Test
 
 @testset "error, zero halo" begin
@@ -44,6 +44,12 @@ end
             @test x > boundaries[i]
         end
     end
+end
+
+@testset "make_increasing" begin
+    @test make_increasing([1,2,3]) == [1,2,3]
+    @test make_increasing([1,1,2,1,3]) == [1,2,3]
+    @test make_increasing([1,1,2,2,3]) == [1,2,3]
 end
 
 using JET

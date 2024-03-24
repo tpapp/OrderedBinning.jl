@@ -91,7 +91,7 @@ and `i` is value returned by the callable. Then
 
 - if `MIN ≤ x ≤ MAX`, `boundaries[i] ≤ x ≤ boundaries[i + 1]` holds. Values that coincide
   with boundaries (other than `MIN` or `MAX`) are assigned to the adjacent bin according
-  to `edge` (valid values: $VALID_EDGES, default: `:right`).
+  to `edge = Val(E)` (valid values for E: $VALID_EDGES, default: `:right`).
 
 - otherwise, `halo_below` and `halo_above` (cf [`default_halo`](@ref) extends the first
   and last bins, ie
@@ -122,10 +122,10 @@ julia> ob(5.1)                  # outside boundaries
 ERROR: DomainError with 5.1:
 above highest boundary + halo
 """
-function ordered_bins(boundaries, edge = :right;
+function ordered_bins(boundaries, edge::Val{E} = Val(:right);
                       halo_below = default_halo(boundaries[end] - boundaries[begin]),
-                      halo_above = halo_below, error_below = true, error_above = true)
-    OrderedBins{edge}(boundaries isa AbstractVector ? boundaries : collect(boundaries),
+                      halo_above = halo_below, error_below = true, error_above = true) where E
+    OrderedBins{E}(boundaries isa AbstractVector ? boundaries : collect(boundaries),
                       promote(halo_below, halo_above)..., error_below, error_above)
 end
 

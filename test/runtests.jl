@@ -1,6 +1,11 @@
 using OrderedBinning: ordered_bins, OrderedBinning, bin_range, make_increasing
 using Test
 
+@testset "disallow empty boundaries" begin
+    @test_throws ArgumentError ordered_bins([0.0])
+    @test_throws ArgumentError ordered_bins([])
+end
+
 @testset "error, zero halo" begin
     boundaries = 0:3
     ob = @inferred ordered_bins(boundaries)

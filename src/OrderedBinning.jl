@@ -47,6 +47,7 @@ struct OrderedBins{E,V<:AbstractVector,T}
         @argcheck E ∈ VALID_EDGES
         @argcheck halo_below ≥ 0
         @argcheck halo_above ≥ 0
+        @argcheck length(boundaries) ≥ 2
         for i in firstindex(boundaries):(lastindex(boundaries)-1)
             @argcheck(boundaries[i] < boundaries[i + 1],
                       "Boundaries need to be strictly increasing (cf OrderedBinning.make_increasing).")
@@ -67,12 +68,21 @@ function Base.show(io::IO, ob::OrderedBins{E}) where E
     _print_halo("above", halo_above, error_above, a)
 end
 
+_default_halo(span::T) where {T <: AbstractFloat} = √eps(span)
+
+_default_halo(span::Real) = zero(span)
+
 """
 Default halo radius.
-"""
-default_halo(span::T) where {T <: AbstractFloat} = √eps(span)
 
-default_halo(span::Real) = 0
+For floats, calculated as `√eps(maximum(boundaries)-minimum(boundaries))`, for other
+types it is zero.
+"""
+function default_halo(boundaries::AbstractVector)
+    # NOTE when boundaries are empty or are not increasing, the constructor errors
+    # so it is safe to just let this through here
+    isempty(boundaries) ? 0 : _default_halo(boundaries[end] - boundaries[begin])
+end
 
 """
 $(SIGNATURES)
@@ -123,7 +133,7 @@ ERROR: DomainError with 5.1:
 above highest boundary + halo
 """
 function ordered_bins(boundaries, edge::Val{E} = Val(:right);
-                      halo_below = default_halo(boundaries[end] - boundaries[begin]),
+                      halo_below = default_halo(boundaries),
                       halo_above = halo_below, error_below = true, error_above = true) where E
     OrderedBins{E}(boundaries isa AbstractVector ? boundaries : collect(boundaries),
                       promote(halo_below, halo_above)..., error_below, error_above)
